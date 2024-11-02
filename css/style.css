@@ -15,3 +15,16 @@
 button.active {
     border: 2px solid #2563eb; /* blue-600 */
 }
+
+.calculator-section {
+    display: none;
+}
+
+.calculator-section.active {
+    display: block !important;  /* Aseguramos que se muestre */
+}
+
+/* Por defecto, mostrar la calculadora de semestre */
+#semesterCalculator {
+    display: block;
+}
