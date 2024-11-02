@@ -191,17 +191,49 @@ function removeSubject(subjectId) {
 }
 
 // Theme toggle
+
 function toggleTheme() {
     // Toggle dark class on html element
     document.documentElement.classList.toggle('dark');
     
     // Update localStorage
     if (document.documentElement.classList.contains('dark')) {
-        localStorage.theme = 'dark';
+        localStorage.setItem('theme', 'dark');
+        themeToggle.innerHTML = '☀️';
     } else {
-        localStorage.theme = 'light';
+        localStorage.setItem('theme', 'light');
+        // Actualizar el contenido del botón
+        themeToggle.innerHTML = '🌙';
     }
     
     // Update state
     state.darkMode = document.documentElement.classList.contains('dark');
 }
+
+// Asegurarnos que el evento se añade cuando el DOM está listo
+document.addEventListener('DOMContentLoaded', function() {
+    // Configuración inicial del botón basada en el tema actual
+    if (document.documentElement.classList.contains('dark')) {
+        themeToggle.innerHTML = '☀️';
+    } else {
+        themeToggle.innerHTML = '🌙';
+    }
+    
+    // Agregar el evento click
+    themeToggle.addEventListener('click', toggleTheme);
+});
+
+// Inicialización del tema al cargar
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        themeToggle.innerHTML = '☀️';
+    } else {
+        document.documentElement.classList.remove('dark');
+        themeToggle.innerHTML = '🌙';
+    }
+}
+
+// Llamar a initializeTheme cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', initializeTheme);

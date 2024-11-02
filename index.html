@@ -10,11 +10,15 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/themes.css">
     <script>
+         tailwind.config = {
+            darkMode: 'class',
+        }
+
         // Check for saved theme preference or system preference
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark')
+         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
         } else {
-            document.documentElement.classList.remove('dark')
+            document.documentElement.classList.remove('dark');
         }
     </script>
 </head>
@@ -24,8 +28,7 @@
         <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
             <h1 class="text-2xl font-bold">UniCalc</h1>
             <button id="themeToggle" class="p-2 rounded-full hover:bg-blue-700 dark:hover:bg-blue-900">
-                <span class="dark:hidden">🌙</span>
-                <span class="hidden dark:inline">☀️</span>
+                🌙
             </button>
         </nav>
     </header>
