@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- ... (resto del head igual) ... -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniCalc - Calculadora Académica</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/themes.css">
     <script>
         // Check for saved theme preference or system preference
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -72,5 +79,10 @@
             <p>© 2024 UniCalc - Hecho con ❤️ para estudiantes</p>
         </div>
     </footer>
+
+        <!-- Scripts -->
+        <script src="js/main.js"></script>
+        <script src="js/calculators.js"></script>
+        <script src="js/storage.js"></script>
 </body>
 </html>

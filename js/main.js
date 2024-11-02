@@ -65,15 +65,15 @@ function addNewSubject() {
 // Render subjects list
 function renderSubjects() {
     subjectsList.innerHTML = state.subjects.map(subject => `
-        <div class="subject-card bg-gray-50 p-4 rounded-lg" data-subject-id="${subject.id}">
+        <div class="subject-card bg-gray-50 dark:bg-gray-700 p-4 rounded-lg" data-subject-id="${subject.id}">
             <div class="flex gap-4 mb-4">
                 <input type="text" 
-                       class="flex-grow p-2 border rounded"
+                       class="flex-grow p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
                        placeholder="Nombre de la materia"
                        value="${subject.name}"
                        onchange="updateSubjectName(${subject.id}, this.value)">
                 <button onclick="removeSubject(${subject.id})" 
-                        class="text-red-600 hover:text-red-800">
+                        class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
                     🗑️
                 </button>
             </div>
@@ -81,9 +81,36 @@ function renderSubjects() {
                 ${renderGrades(subject)}
             </div>
             <button onclick="addGrade(${subject.id})"
-                    class="mt-2 text-blue-600 hover:text-blue-800">
+                    class="mt-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
                 + Agregar nota
             </button>
+        </div>
+    `).join('');
+}
+
+function renderGrades(subject) {
+    return subject.grades.map((grade, index) => `
+        <div class="flex gap-2 items-center">
+            <input type="number" 
+                   class="w-20 p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                   value="${grade.value}"
+                   min="0"
+                   max="5"
+                   step="0.1"
+                   onchange="updateGrade(${subject.id}, ${index}, 'value', this.value)">
+            <input type="number" 
+                   class="w-20 p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                   value="${grade.weight}"
+                   min="0"
+                   max="100"
+                   onchange="updateGrade(${subject.id}, ${index}, 'weight', this.value)">
+            <span class="text-sm text-gray-500 dark:text-gray-400">%</span>
+            ${subject.grades.length > 1 ? `
+                <button onclick="removeGrade(${subject.id}, ${index})"
+                        class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                    ✕
+                </button>
+            ` : ''}
         </div>
     `).join('');
 }
@@ -165,7 +192,16 @@ function removeSubject(subjectId) {
 
 // Theme toggle
 function toggleTheme() {
-    state.darkMode = !state.darkMode;
-    document.body.classList.toggle('dark-mode');
-    saveToLocalStorage();
+    // Toggle dark class on html element
+    document.documentElement.classList.toggle('dark');
+    
+    // Update localStorage
+    if (document.documentElement.classList.contains('dark')) {
+        localStorage.theme = 'dark';
+    } else {
+        localStorage.theme = 'light';
+    }
+    
+    // Update state
+    state.darkMode = document.documentElement.classList.contains('dark');
 }
