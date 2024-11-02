@@ -28,8 +28,22 @@ function initializeApp() {
     loadFromLocalStorage();
     renderSubjects();
     updateAverage();
+    initializeCalculator();
+    console.log('Inicializando aplicación...'); // Para debugging
 }
 
+function initializeCalculator() {
+    // Asegurarse que la calculadora de semestre esté visible por defecto
+    const semesterCalc = document.getElementById('semesterCalculator');
+    if (semesterCalc) {
+        semesterCalc.classList.add('active');
+    }
+    
+    // Inicializar el estado si está vacío
+    if (!state.subjects) {
+        state.subjects = [];
+    }
+}
 // Switch between calculators
 function switchCalculator(e) {
     const selectedCalculator = e.target.dataset.calculator;
