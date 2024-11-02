@@ -40,7 +40,7 @@
             <button class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow active dark:text-white" data-calculator="semester">
                 📊 Promedio Semestral
             </button>
-            <button class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow dark:text-white" data-calculator="required">
+            <button class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow dark:text-white" data-calculator="requiredGrade">
                 🎯 Nota Necesaria
             </button>
             <button class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow dark:text-white" data-calculator="gpa">
@@ -52,9 +52,9 @@
         </div>
 
         <!-- Calculator Container -->
-        <!-- Reemplazar la sección del calculador en index.html -->
         <div id="calculatorContainer" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 dark:text-white">
-            <div id="semesterCalculator" class="calculator-section active">
+            <!-- Calculadora de Promedio Semestral -->
+            <section id="semesterCalculator" class="calculator-section">
                 <h2 class="text-xl font-bold mb-4">Calculadora de Promedio Semestral</h2>
                 <div class="space-y-4">
                     <!-- Add Subject Button -->
@@ -73,7 +73,61 @@
                         <p class="text-lg">Promedio actual: <span id="currentAverage" class="font-bold">0.0</span></p>
                     </div>
                 </div>
-            </div>
+            </section>
+
+            <!-- Calculadora de Nota Necesaria -->
+            <section id="requiredGradeCalculator" class="calculator-section">
+                <h2 class="text-xl font-bold mb-4">Calculadora de Nota Necesaria</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Nota deseada</label>
+                        <input type="number" id="desiredGrade" class="w-full p-2 border rounded dark:bg-gray-700" min="0" max="5" step="0.1">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Porcentaje restante (%)</label>
+                        <input type="number" id="remainingWeight" class="w-full p-2 border rounded dark:bg-gray-700" min="0" max="100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Promedio actual</label>
+                        <input type="number" id="currentGrade" class="w-full p-2 border rounded dark:bg-gray-700" min="0" max="5" step="0.1">
+                    </div>
+                    <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        Nota necesaria: <span id="requiredGrade" class="font-bold">0.0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Calculadora GPA -->
+            <section id="gpaCalculator" class="calculator-section">
+                <h2 class="text-xl font-bold mb-4">Calculadora GPA</h2>
+                <div class="space-y-4">
+                    <div id="gpaSubjectsList" class="space-y-4">
+                        <!-- Las materias se agregarán dinámicamente -->
+                    </div>
+                    <button id="addGpaSubject" class="text-blue-600 hover:text-blue-800 dark:text-blue-400">
+                        + Agregar Materia
+                    </button>
+                    <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        GPA: <span id="gpaResult" class="font-bold">0.0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Simulador de Notas -->
+            <section id="simulatorCalculator" class="calculator-section">
+                <h2 class="text-xl font-bold mb-4">Simulador de Notas</h2>
+                <div class="space-y-4">
+                    <div id="simulationsList" class="space-y-4">
+                        <!-- Las simulaciones se agregarán dinámicamente -->
+                    </div>
+                    <button id="addSimulation" class="text-blue-600 hover:text-blue-800 dark:text-blue-400">
+                        + Agregar Simulación
+                    </button>
+                    <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        Promedio simulado: <span id="simulatedAverage" class="font-bold">0.0</span>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 

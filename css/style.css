@@ -24,7 +24,3 @@ button.active {
     display: block !important;  /* Aseguramos que se muestre */
 }
 
-/* Por defecto, mostrar la calculadora de semestre */
-#semesterCalculator {
-    display: block;
-}

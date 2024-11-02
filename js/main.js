@@ -9,6 +9,7 @@ const state = {
 
 // DOM Elements
 const calculatorButtons = document.querySelectorAll('[data-calculator]');
+const calculatorSections = document.querySelectorAll('.calculator-section');
 const calculatorContainer = document.getElementById('calculatorContainer');
 const addSubjectButton = document.getElementById('addSubject');
 const subjectsList = document.getElementById('subjectsList');
@@ -33,22 +34,46 @@ function initializeApp() {
 }
 
 function initializeCalculator() {
-    // Asegurarse que la calculadora de semestre esté visible por defecto
-    const semesterCalc = document.getElementById('semesterCalculator');
-    if (semesterCalc) {
-        semesterCalc.classList.add('active');
+    // Mostrar la calculadora por defecto (semester)
+    const defaultCalculator = document.getElementById('semesterCalculator');
+    if (defaultCalculator) {
+        // Ocultar todas las calculadoras primero
+        calculatorSections.forEach(section => {
+            section.classList.remove('active');
+        });
+        
+        // Mostrar la calculadora por defecto
+        defaultCalculator.classList.add('active');
     }
     
     // Inicializar el estado si está vacío
     if (!state.subjects) {
         state.subjects = [];
     }
+    
+    // Activar el botón correspondiente
+    const defaultButton = document.querySelector('[data-calculator="semester"]');
+    if (defaultButton) {
+        defaultButton.classList.add('active');
+    }
 }
+
 // Switch between calculators
 function switchCalculator(e) {
     const selectedCalculator = e.target.dataset.calculator;
     
-    // Update active button
+    // Ocultar todas las calculadoras
+    calculatorSections.forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // Mostrar la calculadora seleccionada
+    const activeCalculator = document.getElementById(`${selectedCalculator}Calculator`);
+    if (activeCalculator) {
+        activeCalculator.classList.add('active');
+    }
+    
+    // Actualizar botones activos
     calculatorButtons.forEach(button => {
         button.classList.remove('active');
         if (button.dataset.calculator === selectedCalculator) {
@@ -56,10 +81,8 @@ function switchCalculator(e) {
         }
     });
 
-    // Update state
+    // Actualizar estado
     state.currentCalculator = selectedCalculator;
-
-    // Save state
     saveToLocalStorage();
 }
 

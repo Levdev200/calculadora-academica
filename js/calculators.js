@@ -24,3 +24,7 @@ function updateAverage() {
     
     currentAverageSpan.textContent = average;
 }
+
+function requiredGrade() {
+
+}
