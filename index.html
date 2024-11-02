@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniCalc - Calculadora Académica</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/themes.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white shadow-lg">
+        <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">UniCalc</h1>
+            <button id="themeToggle" class="p-2 rounded-full hover:bg-blue-700">
+                🌓
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Calculator Selection -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <button class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow active" data-calculator="semester">
+                📊 Promedio Semestral
+            </button>
+            <button class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow" data-calculator="required">
+                🎯 Nota Necesaria
+            </button>
+            <button class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow" data-calculator="gpa">
+                📈 Calculadora GPA
+            </button>
+            <button class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow" data-calculator="simulator">
+                💡 Simulador
+            </button>
+        </div>
+
+        <!-- Calculator Container -->
+        <div id="calculatorContainer" class="bg-white rounded-lg shadow-md p-6">
+            <!-- Semester Average Calculator (default view) -->
+            <div id="semesterCalculator" class="calculator-section">
+                <h2 class="text-xl font-bold mb-4">Calculadora de Promedio Semestral</h2>
+                <div class="space-y-4">
+                    <!-- Add Subject Button -->
+                    <button id="addSubject" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                        + Agregar Materia
+                    </button>
+                    
+                    <!-- Subjects List -->
+                    <div id="subjectsList" class="space-y-4">
+                        <!-- Subjects will be added here dynamically -->
+                    </div>
+
+                    <!-- Results -->
+                    <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                        <p class="text-lg">Promedio actual: <span id="currentAverage" class="font-bold">0.0</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 mt-8">
+        <div class="container mx-auto px-4 py-4 text-center text-gray-600">
+            <p>© 2024 UniCalc - Hecho con ❤️ para estudiantes</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/calculators.js"></script>
+    <script src="js/storage.js"></script>
+</body>
+</html>
