@@ -4,6 +4,7 @@
 const state = {
     currentCalculator: 'semester',
     subjects: [],
+    grades: [],
     darkMode: false
 };
 
@@ -35,7 +36,9 @@ function initializeApp() {
 
 function initializeCalculator() {
     // Mostrar la calculadora por defecto (semester)
-    const defaultCalculator = document.getElementById('semesterCalculator');
+   // const defaultCalculator = document.getElementById('semesterCalculator');
+    const defaultCalculator = document.getElementById('requiredGradeCalculator');
+
     if (defaultCalculator) {
         // Ocultar todas las calculadoras primero
         calculatorSections.forEach(section => {
@@ -72,7 +75,7 @@ function switchCalculator(e) {
     if (activeCalculator) {
         activeCalculator.classList.add('active');
     }
-    
+    console.log(selectedCalculator);
     // Actualizar botones activos
     calculatorButtons.forEach(button => {
         button.classList.remove('active');
@@ -152,33 +155,6 @@ function renderGrades(subject) {
     `).join('');
 }
 
-// Render grades for a subject
-function renderGrades(subject) {
-    return subject.grades.map((grade, index) => `
-        <div class="flex gap-2 items-center">
-            <input type="number" 
-                   class="w-20 p-2 border rounded"
-                   value="${grade.value}"
-                   min="0"
-                   max="5"
-                   step="0.1"
-                   onchange="updateGrade(${subject.id}, ${index}, 'value', this.value)">
-            <input type="number" 
-                   class="w-20 p-2 border rounded"
-                   value="${grade.weight}"
-                   min="0"
-                   max="100"
-                   onchange="updateGrade(${subject.id}, ${index}, 'weight', this.value)">
-            <span class="text-sm text-gray-500">%</span>
-            ${subject.grades.length > 1 ? `
-                <button onclick="removeGrade(${subject.id}, ${index})"
-                        class="text-red-600 hover:text-red-800">
-                    ✕
-                </button>
-            ` : ''}
-        </div>
-    `).join('');
-}
 
 // Update functions
 function updateSubjectName(subjectId, newName) {
@@ -274,3 +250,4 @@ function initializeTheme() {
 
 // Llamar a initializeTheme cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', initializeTheme);
+
