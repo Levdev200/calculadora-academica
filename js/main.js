@@ -251,3 +251,27 @@ function initializeTheme() {
 // Llamar a initializeTheme cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', initializeTheme);
 
+// Función para reiniciar la calculadora promedio semestre
+
+const resetsemester = document.getElementById('reset-button-semester');
+resetsemester.addEventListener('click', resetsemesterCalculator); 
+
+function resetsemesterCalculator() {
+    state.grades = []; // Reiniciar las notas
+    state.subjects = [];
+    saveToLocalStorage(); // Guardar el estado vacío en localStorage
+    renderSubjects(); // Renderizar la interfaz vacía
+}
+
+// Función para reiniciar la calculadora nota necesaria
+
+const resetrequired = document.getElementById('reset-button-required');
+resetrequired.addEventListener('click', resetrequiredCalculator); 
+
+function resetrequiredCalculator() {
+    RequiredCalcState.grades = []; // Reiniciar las notas
+    saverequired(); // Guardar el estado vacío en localStorage
+    renderGradesRequired(); // Renderizar la interfaz vacía
+}
+
+
