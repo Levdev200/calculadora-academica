@@ -24,7 +24,7 @@ function updateAverage() {
     
     currentAverageSpan.textContent = average;
 }
-//Calculadora de nota necesaria.
+// Calculadora de nota necesaria.
 
 // Estado inicial.
 const RequiredCalcState = {
@@ -42,13 +42,13 @@ function renderGradesRequired() {
                    min="0"
                    max="5"
                    step="0.1"
-                   onchange="updateGrade(${index}, 'value', this.value)">
+                   onchange="updatenote(${index}, 'value', this.value)">
             <input type="number" 
                    class="w-20 p-2 border rounded weight"
                    value="${grade.weight}"
                    min="0"
                    max="100"
-                   onchange="updateGrade(${index}, 'weight', this.value)">
+                   onchange="updatenote(${index}, 'weight', this.value)">
             <span class="text-sm text-gray-500">%</span>
             ${RequiredCalcState.grades.length > 1 ? `
                 <button onclick="removeGradetorequired(${index})"
@@ -65,6 +65,7 @@ function addGradetorequired() {
     const newGrade = { value: 0, weight: 0 };
     RequiredCalcState.grades.push(newGrade);
     renderGradesRequired();
+    saverequired(); // Guardar después de agregar
 }
 
 // Función para eliminar una nota
@@ -72,14 +73,19 @@ function removeGradetorequired(index) {
     if (RequiredCalcState.grades.length > 1) {
         RequiredCalcState.grades.splice(index, 1);
         renderGradesRequired();
+        saverequired(); // Guardar después de eliminar
     }
 }
 
 // Función para actualizar el valor o peso de una nota
-
+function updatenote(index, key, value) {
+    RequiredCalcState.grades[index][key] = parseFloat(value);
+    saverequired(); // Guardar después de actualizar
+}
 
 // Inicializa el renderizado al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
+    loadrequired(); // Cargar estado guardado
     renderGradesRequired(); // Renderiza inicialmente si hay notas guardadas
 });
 
@@ -87,16 +93,24 @@ document.addEventListener('DOMContentLoaded', () => {
 document.getElementById('add-grade-button').addEventListener('click', addGradetorequired); // Asegúrate de tener este botón en tu HTML
 
 // Ejemplo de cómo guardar en localStorage si es necesario
-function saveToLocalStorage() {
+function saverequired() {
     localStorage.setItem('RequiredCalcState', JSON.stringify(RequiredCalcState));
 }
 
-//Funcion para calcular la nota necesaria
+// Cargar desde localStorage
+function loadrequired() {
+    const savedState = localStorage.getItem('RequiredCalcState');
+    if (savedState) {
+        Object.assign(RequiredCalcState, JSON.parse(savedState));
+    }
+}
+
+// Función para calcular la nota necesaria
 function CalculateRequired() {
   let notes = document.querySelectorAll(".notes");
   let weights = document.querySelectorAll(".weight");
   let targetNote = parseFloat(document.getElementById("desiredGrade").value);
-  const requiredcontainer = document.getElementById('requiredGrade')
+  const requiredcontainer = document.getElementById('requiredGrade');
 
   let totalWeightedGrades = 0;
   let totalWeight = 0;
@@ -131,7 +145,6 @@ function CalculateRequired() {
     requiredcontainer.innerText = `${requiredGrade.toFixed(2)}`;
   }
 }
+
 const calculateButton = document.getElementById('Calculate-required');
 calculateButton.addEventListener('click', CalculateRequired);
-
-
