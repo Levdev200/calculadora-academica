@@ -36,15 +36,12 @@
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
         <!-- Calculator Selection -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <button class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow active dark:text-white" data-calculator="semester">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            <button class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow dark:text-white" data-calculator="semester">
                 📊 Promedio Semestral
             </button>
             <button class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow dark:text-white" data-calculator="requiredGrade">
                 🎯 Nota Necesaria
-            </button>
-            <button class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow dark:text-white" data-calculator="gpa">
-                📈 Calculadora GPA
             </button>
             <button class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow dark:text-white" data-calculator="simulator">
                 💡 Simulador
@@ -102,22 +99,6 @@
 
                     <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                         Nota necesaria: <span id="requiredGrade" class="font-bold">0.0</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Calculadora GPA -->
-            <section id="gpaCalculator" class="calculator-section">
-                <h2 class="text-xl font-bold mb-4">Calculadora GPA</h2>
-                <div class="space-y-4">
-                    <div id="gpaSubjectsList" class="space-y-4">
-                        <!-- Las materias se agregarán dinámicamente -->
-                    </div>
-                    <button id="addGpaSubject" class="text-blue-600 hover:text-blue-800 dark:text-blue-400">
-                        + Agregar Materia
-                    </button>
-                    <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        GPA: <span id="gpaResult" class="font-bold">0.0</span>
                     </div>
                 </div>
             </section>

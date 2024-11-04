@@ -2,7 +2,7 @@
 
 // State management
 const state = {
-    currentCalculator: 'semester',
+    currentCalculator: 'requiredGrade',
     subjects: [],
     grades: [],
     darkMode: false
@@ -31,34 +31,43 @@ function initializeApp() {
     renderSubjects();
     updateAverage();
     initializeCalculator();
+    initializeTheme();
     console.log('Inicializando aplicación...'); // Para debugging
 }
 
 function initializeCalculator() {
     // Mostrar la calculadora por defecto (semester)
-   // const defaultCalculator = document.getElementById('semesterCalculator');
-    const defaultCalculator = document.getElementById('requiredGradeCalculator');
-
-    if (defaultCalculator) {
+    const defaultCalculatorText = 'semester';
+    const defaultCalculator = document.getElementById('semesterCalculator')
+    const savedCalText = String(InitializeCurrentCalculator())
+    const savedCal = `${String(InitializeCurrentCalculator())}Calculator`;
+    const savedCalc = document.getElementById(savedCal);
+    console.log(savedCalc);
+     
+    if (savedCalc) {
         // Ocultar todas las calculadoras primero
         calculatorSections.forEach(section => {
             section.classList.remove('active');
         });
         
         // Mostrar la calculadora por defecto
+        savedCalc.classList.add('active');
+        const defaultButton = document.querySelector(`[data-calculator=${savedCalText}]`);
+        console.log(" hay datos guardados, se pone la calculadora guardada");
+        defaultButton.classList.add('active');
+
+    } else {
         defaultCalculator.classList.add('active');
-    }
+        const defaultButton = document.querySelector(`[data-calculator="${defaultCalculatorText}"]`);
+        console.log("no hay datos guardados, se pone la calculadora por defecto");
+        defaultButton.classList.add('active');
     
-    // Inicializar el estado si está vacío
-    if (!state.subjects) {
-        state.subjects = [];
+        
     }
     
     // Activar el botón correspondiente
-    const defaultButton = document.querySelector('[data-calculator="semester"]');
-    if (defaultButton) {
-        defaultButton.classList.add('active');
-    }
+   
+   
 }
 
 // Switch between calculators
@@ -223,18 +232,6 @@ function toggleTheme() {
     state.darkMode = document.documentElement.classList.contains('dark');
 }
 
-// Asegurarnos que el evento se añade cuando el DOM está listo
-document.addEventListener('DOMContentLoaded', function() {
-    // Configuración inicial del botón basada en el tema actual
-    if (document.documentElement.classList.contains('dark')) {
-        themeToggle.innerHTML = '☀️';
-    } else {
-        themeToggle.innerHTML = '🌙';
-    }
-    
-    // Agregar el evento click
-    themeToggle.addEventListener('click', toggleTheme);
-});
 
 // Inicialización del tema al cargar
 function initializeTheme() {
@@ -248,8 +245,23 @@ function initializeTheme() {
     }
 }
 
-// Llamar a initializeTheme cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', initializeTheme);
+function InitializeCurrentCalculator() {
+
+    // Obtener el estado guardado en localStorage
+    const savedState = localStorage.getItem("unicalc-state");
+    if (savedState) {
+        // Parsear el JSON a un objeto
+        const data = JSON.parse(savedState);
+
+        // Acceder a la propiedad currentCalculator
+        const currentCalculator = data.currentCalculator;
+
+        // Mostrar el valor de currentCalculator
+        return currentCalculator;
+    } else {
+        return false;
+    }
+} 
 
 // Función para reiniciar la calculadora promedio semestre
 
