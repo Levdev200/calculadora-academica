@@ -132,6 +132,5 @@
         <script src="js/main.js"></script>
         <script src="js/calculators.js"></script>
         <script src="js/storage.js"></script>
-        <script src="js/simulator.js"></script>
 </body>
 </html>

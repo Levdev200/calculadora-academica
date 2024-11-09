@@ -103,7 +103,7 @@ function addNewSubject() {
     const newSubject = {
         id: Date.now(),
         name: '',
-        grades: [{ weight: 100, value: 0 }]
+        grades: [{ weight: 0, value: 0 }]
     };
 
     state.subjects.push(newSubject);
@@ -186,10 +186,7 @@ function updateGrade(subjectId, gradeIndex, field, value) {
 function addGrade(subjectId) {
     const subject = state.subjects.find(s => s.id === subjectId);
     if (subject) {
-        subject.grades.push({ weight: 100 / (subject.grades.length + 1), value: 0 });
-        subject.grades.forEach(grade => {
-            grade.weight = 100 / subject.grades.length;
-        });
+        subject.grades.push({ weight: 0, value: 0});
         renderSubjects();
         saveToLocalStorage();
     }
