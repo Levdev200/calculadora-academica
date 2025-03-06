@@ -16,6 +16,8 @@ const addSubjectButton = document.getElementById('addSubject');
 const subjectsList = document.getElementById('subjectsList');
 const currentAverageSpan = document.getElementById('currentAverage');
 const themeToggle = document.getElementById('themeToggle');
+const requiredcontainer = document.getElementById('requiredGrade');
+
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', initializeApp);
@@ -97,6 +99,7 @@ function switchCalculator(e) {
     state.currentCalculator = selectedCalculator;
     saveToLocalStorage();
 }
+// === Calculadora de Promedio Semestral ===
 
 // Add new subject
 function addNewSubject() {
@@ -113,28 +116,36 @@ function addNewSubject() {
 
 // Render subjects list
 function renderSubjects() {
-    subjectsList.innerHTML = state.subjects.map(subject => `
-        <div class="subject-card bg-gray-50 dark:bg-gray-700 p-4 rounded-lg" data-subject-id="${subject.id}">
-            <div class="flex gap-4 mb-4">
-                <input type="text" 
-                       class="flex-grow p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-                       placeholder="Nombre de la materia"
-                       value="${subject.name}"
-                       onchange="updateSubjectName(${subject.id}, this.value)">
-                <button onclick="removeSubject(${subject.id})" 
-                        class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
-                    🗑️
-                </button>
+    subjectsList.innerHTML = state.subjects.map(subject => {
+        const remainingWeight = getRemainingWeight(subject.grades);
+        return `
+            <div class="subject-card bg-gray-50 dark:bg-gray-700 p-4 rounded-lg" data-subject-id="${subject.id}">
+                <div class="flex gap-4 mb-4">
+                    <input type="text" 
+                           class="flex-grow p-2 border rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                           placeholder="Nombre de la materia"
+                           value="${subject.name}"
+                           onchange="updateSubjectName(${subject.id}, this.value)">
+                    <button onclick="removeSubject(${subject.id})" 
+                            class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                        🗑️
+                    </button>
+                </div>
+                <div class="grades-list space-y-2">
+                    ${renderGrades(subject)}
+                </div>
+                <div class="mt-2 ${remainingWeight > 0 ? 'text-green-600' : 'text-red-600'} text-sm">
+                    Peso restante: ${remainingWeight}%
+                </div>
+                ${remainingWeight > 0 ? `
+                    <button onclick="addGrade(${subject.id})"
+                            class="mt-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                        + Agregar nota
+                    </button>
+                ` : ''}
             </div>
-            <div class="grades-list space-y-2">
-                ${renderGrades(subject)}
-            </div>
-            <button onclick="addGrade(${subject.id})"
-                    class="mt-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                + Agregar nota
-            </button>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 function renderGrades(subject) {
@@ -177,18 +188,40 @@ function updateSubjectName(subjectId, newName) {
 function updateGrade(subjectId, gradeIndex, field, value) {
     const subject = state.subjects.find(s => s.id === subjectId);
     if (subject && subject.grades[gradeIndex]) {
-        subject.grades[gradeIndex][field] = Number(value);
+        if (field === 'weight') {
+            const newValue = Number(value);
+            // Calcular el peso total excluyendo el peso actual
+            const otherWeightsTotal = subject.grades.reduce((sum, grade, idx) => {
+                return sum + (idx === gradeIndex ? 0 : Number(grade.weight));
+            }, 0);
+            
+            if (otherWeightsTotal + newValue > 100) {
+                showWeightAlert();
+                // Ajustar al máximo valor posible
+                subject.grades[gradeIndex].weight = 100 - otherWeightsTotal;
+            } else {
+                subject.grades[gradeIndex].weight = newValue;
+            }
+        } else {
+            subject.grades[gradeIndex][field] = Number(value);
+        }
         updateAverage();
         saveToLocalStorage();
+        renderSubjects(); // Re-render para actualizar indicadores de peso
     }
 }
 
 function addGrade(subjectId) {
     const subject = state.subjects.find(s => s.id === subjectId);
     if (subject) {
-        subject.grades.push({ weight: 0, value: 0});
-        renderSubjects();
-        saveToLocalStorage();
+        const remainingWeight = getRemainingWeight(subject.grades);
+        if (remainingWeight > 0) {
+            subject.grades.push({ weight: 0, value: 0 });
+            renderSubjects();
+            saveToLocalStorage();
+        } else {
+            showWeightAlert();
+        }
     }
 }
 
@@ -268,6 +301,7 @@ resetsemester.addEventListener('click', resetsemesterCalculator);
 function resetsemesterCalculator() {
     state.grades = []; // Reiniciar las notas
     state.subjects = [];
+    updateAverage();
     saveToLocalStorage(); // Guardar el estado vacío en localStorage
     renderSubjects(); // Renderizar la interfaz vacía
 }
@@ -281,6 +315,8 @@ function resetrequiredCalculator() {
     RequiredCalcState.grades = []; // Reiniciar las notas
     saverequired(); // Guardar el estado vacío en localStorage
     renderGradesRequired(); // Renderizar la interfaz vacía
+    document.getElementById("desiredGrade").value = '';
+    requiredcontainer.innerText = 0;
 }
 
 

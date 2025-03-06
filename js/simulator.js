@@ -14,6 +14,9 @@ function getRemainingWeight(grades) {
     const totalWeight = grades.reduce((sum, grade) => sum + Number(grade.weight), 0);
     return Math.max(0, 100 - totalWeight);
 }
+function showWeightAlert() {
+    alert('El peso total no puede exceder el 100%');
+}
 
 // Función para renderizar las simulaciones
 function renderSimulations() {

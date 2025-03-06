@@ -34,38 +34,49 @@ const gradesList = document.getElementById('requiredGrades-list'); // Asegúrate
 
 // Función para renderizar las notas
 function renderGradesRequired() {
-    gradesList.innerHTML = RequiredCalcState.grades.map((grade, index) => `
-        <div class="flex gap-2 items-center">
-            <input type="number" 
-                   class="w-20 p-2 border rounded notes"
-                   value="${grade.value}"
-                   min="0"
-                   max="5"
-                   step="0.1"
-                   onchange="updatenote(${index}, 'value', this.value)">
-            <input type="number" 
-                   class="w-20 p-2 border rounded weight"
-                   value="${grade.weight}"
-                   min="0"
-                   max="100"
-                   onchange="updatenote(${index}, 'weight', this.value)">
-            <span class="text-sm text-gray-500">%</span>
-            ${RequiredCalcState.grades.length > 1 ? `
-                <button onclick="removeGradetorequired(${index})"
-                        class="text-red-600 hover:text-red-800">
-                    ✕
-                </button>
-            ` : ''}
+    const remainingWeight = getRemainingWeight(RequiredCalcState.grades);
+    gradesList.innerHTML = `
+        ${RequiredCalcState.grades.map((grade, index) => `
+            <div class="flex gap-2 items-center">
+                <input type="number" 
+                       class="w-20 p-2 border rounded notes"
+                       value="${grade.value}"
+                       min="0"
+                       max="5"
+                       step="0.1"
+                       onchange="updatenote(${index}, 'value', this.value)">
+                <input type="number" 
+                       class="w-20 p-2 border rounded weight"
+                       value="${grade.weight}"
+                       min="0"
+                       max="100"
+                       onchange="updatenote(${index}, 'weight', this.value)">
+                <span class="text-sm text-gray-500">%</span>
+                ${RequiredCalcState.grades.length > 1 ? `
+                    <button onclick="removeGradetorequired(${index})"
+                            class="text-red-600 hover:text-red-800">
+                        ✕
+                    </button>
+                ` : ''}
+            </div>
+        `).join('')}
+        <div class="mt-2 ${remainingWeight > 0 ? 'text-green-600' : 'text-red-600'} text-sm">
+            Peso restante: ${remainingWeight}%
         </div>
-    `).join('');
+    `;
 }
 
 // Función para agregar una nueva nota
 function addGradetorequired() {
-    const newGrade = { value: 0, weight: 0 };
-    RequiredCalcState.grades.push(newGrade);
-    renderGradesRequired();
-    saverequired(); // Guardar después de agregar
+    const remainingWeight = getRemainingWeight(RequiredCalcState.grades);
+    if (remainingWeight > 0) {
+        const newGrade = { value: 0, weight: 0 };
+        RequiredCalcState.grades.push(newGrade);
+        renderGradesRequired();
+        saverequired();
+    } else {
+        showWeightAlert();
+    }
 }
 
 // Función para eliminar una nota
@@ -79,10 +90,25 @@ function removeGradetorequired(index) {
 
 // Función para actualizar el valor o peso de una nota
 function updatenote(index, key, value) {
-    RequiredCalcState.grades[index][key] = parseFloat(value);
-    saverequired(); // Guardar después de actualizar
+    if (key === 'weight') {
+        const newValue = Number(value);
+        const otherWeightsTotal = RequiredCalcState.grades.reduce((sum, grade, idx) => {
+            return sum + (idx === index ? 0 : Number(grade.weight));
+        }, 0);
+        
+        if (otherWeightsTotal + newValue > 100) {
+            showWeightAlert();
+            RequiredCalcState.grades[index].weight = 100 - otherWeightsTotal;
+        } else {
+            RequiredCalcState.grades[index].weight = newValue;
+        }
+    } else {
+        RequiredCalcState.grades[index][key] = parseFloat(value);
+    }
+    
+    renderGradesRequired();
+    saverequired();
 }
-
 // Inicializa el renderizado al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
     loadrequired(); // Cargar estado guardado
@@ -107,43 +133,46 @@ function loadrequired() {
 
 // Función para calcular la nota necesaria
 function CalculateRequired() {
-  let notes = document.querySelectorAll(".notes");
-  let weights = document.querySelectorAll(".weight");
-  let targetNote = parseFloat(document.getElementById("desiredGrade").value);
-  const requiredcontainer = document.getElementById('requiredGrade');
+    let notes = document.querySelectorAll(".notes");
+    let weights = document.querySelectorAll(".weight");
+    let targetNote = parseFloat(document.getElementById("desiredGrade").value);
 
-  let totalWeightedGrades = 0;
-  let totalWeight = 0;
+    let totalWeightedGrades = 0;
+    let totalWeight = 0;
 
-  // Sumar las notas y los pesos
-  notes.forEach((gradeInput, index) => {
-    const gradeValue = parseFloat(gradeInput.value) || 0; // Valor de la nota
-    const weightValue = parseFloat(weights[index].value) || 0; // Peso de la nota
-    totalWeightedGrades += gradeValue * (weightValue / 100); // Sumar las notas ponderadas
-    totalWeight += weightValue; // Sumar los pesos
-  });
+    // Validar que tengamos una nota objetivo válida
+    if (isNaN(targetNote) || targetNote < 0 || targetNote > 5) {
+        requiredcontainer.innerText = "Por favor ingresa una nota objetivo válida entre 0 y 5.";
+        return;
+    }
 
-  // Calcular el peso restante que necesita la nueva nota
-  const remainingWeight = 100 - totalWeight;
+    // Sumar las notas y los pesos
+    notes.forEach((gradeInput, index) => {
+        const gradeValue = parseFloat(gradeInput.value) || 0;
+        const weightValue = parseFloat(weights[index].value) || 0;
+        totalWeightedGrades += gradeValue * (weightValue / 100);
+        totalWeight += weightValue;
+    });
 
-  if (remainingWeight <= 0) {
-    document.getElementById("result").innerText =
-      "Ya has alcanzado o superado el peso total.";
-    return;
-  }
+    // Calcular el peso restante
+    const remainingWeight = getRemainingWeight(RequiredCalcState.grades);
 
-  // Calcular la nota necesaria
-  const requiredGrade =
-    ((targetNote - totalWeightedGrades) * 100) / remainingWeight;
+    if (remainingWeight <= 0) {
+        requiredcontainer.innerText = "Ya has alcanzado el 100% del peso total.";
+        return;
+    }
 
-  // Mostrar el resultado
-  if (requiredGrade < 0) {
-    requiredcontainer.innerText = "No necesitas ninguna nota adicional para alcanzar tu objetivo.";
-  } else if (requiredGrade > 5) {
-    requiredcontainer.innerText = "Necesitas más de 5 para alcanzar tu objetivo, lo cual no es posible.";
-  } else {
-    requiredcontainer.innerText = `${requiredGrade.toFixed(2)}`;
-  }
+    // Calcular la nota necesaria
+    const requiredGrade = ((targetNote - totalWeightedGrades) * 100) / remainingWeight;
+
+    // Mostrar el resultado
+    if (requiredGrade < 0) {
+        requiredcontainer.innerText = "No necesitas ninguna nota adicional para alcanzar tu objetivo.";
+    } else if (requiredGrade > 5) {
+        requiredcontainer.innerText = "Necesitas más de 5 para alcanzar tu objetivo, lo cual no es posible.";
+    } else {
+        requiredcontainer.innerText = `${requiredGrade.toFixed(2)}`;
+    }
 }
 
 const calculateButton = document.getElementById('Calculate-required');
